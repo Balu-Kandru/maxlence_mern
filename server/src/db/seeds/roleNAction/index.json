@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Customer",
+        "description": "this role can be used to perform all basic actions",
+        "actions": [
+            {
+                "name": "My Content",
+                "description": "self content actions can be performed."
+            }
+        ]
+    },
+    {
+        "name": "Admin",
+        "description": "this role can be used to perform all internar actions",
+        "actions": [
+            {
+                "name": "All Users",
+                "description": "All users actions can be performed."
+            },
+            {
+                "name": "All Content",
+                "description": "All content actions can be performed."
+            }
+        ]
+    }
+]   

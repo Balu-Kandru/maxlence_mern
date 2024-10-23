@@ -1,0 +1,16 @@
+# Node.js dependencies
+node_modules/
+
+# Package lock files
+package-lock.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env*
+
+#uploads folder
+uploads/*

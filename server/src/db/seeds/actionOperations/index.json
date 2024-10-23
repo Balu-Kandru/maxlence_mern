@@ -1,0 +1,23 @@
+[
+    {
+        "actionName": "All Users",
+        "fetch": "/api/user-management/",
+        "edit": null,
+        "post": null,
+        "delete": "/api/user-management/"
+    },
+    {
+        "actionName": "All Content",
+        "fetch": "/api/content/getAllContent",
+        "edit": null,
+        "post": "api/content",
+        "delete": "/api/content"
+    },
+    {
+        "actionName": "My Content",
+        "fetch": "/api/content/",
+        "edit": null,
+        "post": "/api/content",
+        "delete": "/api/content"
+    }
+]
