@@ -31,6 +31,21 @@ Before starting the project, ensure the following services are running:
    ```bash
    redis-server --port 6380
 
+2. **Create Actions and Roles**:
+   The application requires Actions and Roles. You can create by with the following command (make sure you're inside server folder):
+   ```bash
+   npm run push:roles-actions
+   
+3. **Create Action API**:
+   The application requires API master. You can create by with the following command (make sure you're inside server folder):
+   ```bash
+   npm run push:actionOperations
+   
+4. **Create Admin User**:
+    You can create Admin by with the following command (make sure you're inside server folder):
+   ```bash
+   npm run push:admin
+
 
 ## client env
 VITE_SERVER_BASE_URL=http://localhost:3001
