@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
-import { apiClient, getToken } from '../helpers/common';
 import { ApiRoutes } from '../enums/apiRoutes';
 import { useNavigate } from 'react-router-dom';
+import { apiClient } from '../helpers/axiosClient';
 
 interface AddContentForm {
   title: string;
@@ -25,13 +25,6 @@ const AddContent: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const token = getToken();
-    if (!token) {
-      alert('You must be logged in to add content');
-      return;
-    }
-
     if (!formData.title || !formData.body) {
       alert('Both fields are required');
       return;
@@ -39,11 +32,7 @@ const AddContent: React.FC = () => {
 
     try {
       setLoading(true);
-      await apiClient.post(ApiRoutes.ADD_CONTENT, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await apiClient.post(ApiRoutes.ADD_CONTENT, formData);
       alert('Content added successfully!');
       setFormData({
         title: '',

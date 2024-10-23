@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { ReactNode } from 'react';
 import { localStorageVariables } from '../enums/commonVariables';
 import { Navigate } from 'react-router-dom';
@@ -6,10 +5,6 @@ import { Navigate } from 'react-router-dom';
 
 export const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:3000';
 
-
-const apiClient = axios.create({
-    baseURL: BASE_URL,
-});
 
 function getToken(): string | null{
     let token = window.localStorage ? window.localStorage.getItem(localStorageVariables.AUTH_TOKEN) : null;
@@ -77,5 +72,5 @@ const IsUserLoggedIn: React.FC<ProtectedProps> = ({ children }) => {
     );
 }
 
-export { isAuthenticated, getToken, getProfilePic, getUserId, Protected, IsUserLoggedIn, getUserName, clearLocalStorage, setLocalStorage, apiClient };
+export { isAuthenticated, getToken, getProfilePic, getUserId, Protected, IsUserLoggedIn, getUserName, clearLocalStorage, setLocalStorage };
 

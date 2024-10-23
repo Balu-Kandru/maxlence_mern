@@ -4,9 +4,10 @@ import { TextField, Button, Box, Typography, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ApiRoutes } from '../../enums/apiRoutes';
 import { AxiosResponse } from 'axios';
-import { apiClient, clearLocalStorage, setLocalStorage } from '../../helpers/common';
+import { setLocalStorage } from '../../helpers/common';
 import { AuthResponse } from '../../types/login.interface';
 import { useActionContext } from '../../ActionContext';
+import { apiClient } from '../../helpers/axiosClient';
 
 type SignInFormData = {
   email: string;
@@ -48,7 +49,7 @@ const SignIn: React.FC = () => {
         {...register("password", { required: "Password is required" })}
         error={!!errors.password}
         helperText={errors.password?.message}
-        sx={{ mb: 2 }} // Add margin bottom for spacing
+        sx={{ mb: 2 }}
       />
 
       <Button type="submit" variant="contained" fullWidth>

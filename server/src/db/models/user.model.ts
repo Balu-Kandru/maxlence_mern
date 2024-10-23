@@ -61,6 +61,9 @@ export class User extends Model {
                 withPassword: {
                     attributes: { include: ['password'] },
                 },
+                withToken: {
+                    attributes: { include: ['token'] }
+                }
             },
         })
     }

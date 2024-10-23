@@ -21,7 +21,6 @@ export async function sendEmail(mailOptions: MailOptions){
 }
 
 export async function sendWelcomeEmail(email: string, confirmationLink: string) {
-
     const mailOptions = {
         from: config.email.emailId,
         to: email,
@@ -31,3 +30,15 @@ export async function sendWelcomeEmail(email: string, confirmationLink: string) 
     };
     await sendEmail(mailOptions);
 }
+
+export async function sendForgotPasswordEmail(email: string, resetLink: string) {
+    const mailOptions = {
+        from: config.email.emailId,
+        to: email,
+        subject: 'Reset Your Password',
+        html: `<p>Click the link below to reset your password:</p>
+               <a href="${resetLink}">Reset Password</a>`,
+    };
+    await sendEmail(mailOptions);
+}
+

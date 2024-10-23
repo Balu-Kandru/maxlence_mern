@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { TextField, Button, Box, Typography, Link, FormControl, Input, Avatar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ApiRoutes } from '../../enums/apiRoutes';
-import { apiClient } from '../../helpers/common';
+import { apiClient } from '../../helpers/axiosClient';
 
 type SignUpFormData = {
   name: string;

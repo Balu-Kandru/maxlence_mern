@@ -9,6 +9,15 @@ export function wholeUrl(){
     return filePath
 }
 
+export function clientUrl(...routePaths: string[]): string {
+    return `${config.client.url}${routePaths.join('/')}`;
+}
+
+
+export function serverUrl(routePath: string){
+    return `${config.server.url}/${routePath}`;
+}
+
 export function error(req: Request, res: Response, next: NextFunction){
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

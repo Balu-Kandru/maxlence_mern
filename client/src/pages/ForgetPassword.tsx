@@ -2,6 +2,8 @@ import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { TextField, Button, Box, Typography, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { apiClient } from '../helpers/axiosClient';
+import { ApiRoutes } from '../enums/apiRoutes';
 
 type ForgotPasswordFormData = {
   email: string;
@@ -12,8 +14,12 @@ const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<ForgotPasswordFormData> = (data) => {
-    console.log(data)
-    navigate('/')
+    apiClient.post(ApiRoutes.FORGOT_PASSWORD, data).then(()=>{
+      alert('Please check your inbox')
+      navigate('/')
+    }).catch((error)=>{
+      console.error(error)
+    })
   };
 
   return (

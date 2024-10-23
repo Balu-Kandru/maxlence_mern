@@ -9,6 +9,7 @@ import { IsUserLoggedIn, Protected } from './helpers/common';
 import DataGrid from './pages/TableData';
 import UpdateProfile from './pages/EditProfile';
 import CreateContent from './pages/CreateContent';
+import NotFoundPage from './components/NotFound';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/data-grid/:actionId" element={<Protected><DataGrid /></Protected>} />
         <Route path="/edit-profile" element={<Protected><UpdateProfile /></Protected>} />
         <Route path="/create-content" element={<Protected><CreateContent /></Protected>} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );

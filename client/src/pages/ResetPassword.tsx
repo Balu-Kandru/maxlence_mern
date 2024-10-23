@@ -2,6 +2,8 @@ import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { TextField, Button, Box, Container } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import { apiClient } from '../helpers/axiosClient';
+import { ApiRoutes } from '../enums/apiRoutes';
 
 type ResetPasswordFormData = {
   password: string;
@@ -14,7 +16,7 @@ const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<ResetPasswordFormData> = (data) => {
-    console.log(data, token);
+    apiClient.post(`${ApiRoutes.CHANGE_PASSWORD}/${token}`, data)
     navigate('/')
   };
 

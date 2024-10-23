@@ -4,7 +4,7 @@ import { LinkActionNRole } from "../db/models/linkActionNRole.model";
 import { LinkUserNRole } from "../db/models/linkUserNRole.model";
 import { Role } from "../db/models/role.model";
 import { User } from "../db/models/user.model";
-import { compareHashedText, generateJwtToken, hashText } from "./helpers/hashing";
+import { compareHashedText, hashText } from "./helpers/hashing";
 import { Op } from "sequelize"
 interface CreateUserParams {
     name: string;
@@ -25,7 +25,7 @@ export const getUsers = async (limit: number, offset: number, whereCondition?: a
 
         return {
             total: count,
-            page: offset/limit,
+            page: offset / limit,
             totalPages: Math.ceil(count / limit),
             content: rows,
         }
@@ -36,7 +36,7 @@ export const getUsers = async (limit: number, offset: number, whereCondition?: a
 
 export const getUser = async (whereCondition?: any) => {
     try {
-        const data = await User.findOne({
+        const data = await User.scope('withToken').findOne({
             where: whereCondition,
         });
 
@@ -62,6 +62,15 @@ export const createUser = async ({ name, email, password, filePath, isValidated 
         return newUser;
     } catch (error) {
         throw new Error('User creation failed: ' + error.message);
+    }
+}
+
+export const updatePassword = async (password: string, whereCondition: any) => {
+    try {
+        const hashedPassword = await hashText(password);
+        await User.update({ password: hashedPassword }, { where: whereCondition })
+    } catch (error) {
+        throw new Error('failed to change password: ' + error.message);
     }
 }
 
@@ -155,10 +164,10 @@ export const getUserActions = async (userId: number) => {
             ],
             attributes: [],
         });
-        const actionList = actions.flatMap(role => 
+        const actionList = actions.flatMap(role =>
             role.actionRoles.map(actionRole => actionRole.action)
         );
-        
+
         return actionList;
     } catch (error) {
         throw new Error(`Failed to retrieve actions for user ID ${userId}: ${error.message}`);
@@ -267,6 +276,14 @@ export const getRoles = async () => {
     }
 }
 
+export const modifyUser = async (whereCondition: any, updateUser) => {
+    try {
+        await User.update(updateUser, { where: whereCondition })
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 export const createAction = async (name: string, description: string) => {
     try {
         return await Action.create({
@@ -312,7 +329,7 @@ export const getRoleByName = async (name: string) => {
 export const getOperation = async (actionId: number) => {
     try {
         const operations = await ActionOperation.findOne({
-            where: {actionId}
+            where: { actionId }
         })
         return operations;
     } catch (error) {

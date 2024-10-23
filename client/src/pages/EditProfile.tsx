@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container } from '@mui/material';
 import Header from '../components/Header';
-import EditProfile from '../components/EditProfile';
+import EditProfileForm from '../components/EditProfileForm';
 
 const UpdateProfile: React.FC = () => {
 
@@ -14,7 +14,7 @@ const UpdateProfile: React.FC = () => {
             }
         }}>
             <Header />
-            <EditProfile/>
+            <EditProfileForm/>
         </Container >
     );
 };

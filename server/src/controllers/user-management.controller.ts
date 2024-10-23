@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-import { assignAction, assignRole, createAction, createRole, createUser, getAction, getUsers, getRoleByName, getRoles, validateUser, getUserActions, deleteUser, getOperation, getUser, getRolesAndActionsByUserId, transformRolesAndActions, verifyUser } from '../services/user-management.service';
+import { assignAction, assignRole, createAction, createRole, createUser, getAction, getUsers, getRoleByName, getRoles, validateUser, getUserActions, deleteUser, getOperation, getUser, getRolesAndActionsByUserId, transformRolesAndActions, verifyUser, updatePassword, modifyUser } from '../services/user-management.service';
 import { validationResult } from 'express-validator';
 import { generateJwtToken, generateToken } from '../services/helpers/hashing';
-import { sendWelcomeEmail } from '../services/email.service';
+import { sendForgotPasswordEmail, sendWelcomeEmail } from '../services/email.service';
 import { APIPath } from '../enums/api.enum';
 import { StatusCodes } from 'http-status-codes';
 import config from '../config/index.config';
 import { Roles } from '../enums/roles.enum';
-import { wholeUrl } from '../services/helpers/common';
+import { clientUrl, serverUrl, wholeUrl } from '../services/helpers/common';
 import { getCachedData, storeCache } from '../loaders/redis.loader';
 
 
@@ -34,17 +34,16 @@ export async function listUsers(req: Request, res: Response, next: NextFunction)
 
 export async function registerUser(req: Request, res: Response, next: NextFunction) {
     try {
-        console.log(req)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             const errorInfo = errors.array().map(ele => ele.msg);
-            next({message: errorInfo.join(",")})
+            next({ message: errorInfo.join(",") })
             return;
         }
         const token = await generateToken();
         const { name, email, password } = req.body;
         const profilePicture = req.file;
-        const filePath = `${config.server.url}/${profilePicture.path}`;
+        const filePath = serverUrl(profilePicture.path);
         const url = wholeUrl();
         const confirmationLink = `${url}${APIPath.confirmEmail}/${token}`;
 
@@ -67,7 +66,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             const errorInfo = errors.array().map(ele => ele.msg);
-            next({message: errorInfo.join(",")})
+            next({ message: errorInfo.join(",") })
             return;
         }
         const { email, password } = req.body;
@@ -103,7 +102,6 @@ export async function confirmUser(req: Request, res: Response, next: NextFunctio
             </html>`;
         res.status(StatusCodes.OK).send(htmlResponse);
     } catch (error) {
-        console.error(error.message)
         const htmlResponse =
             `<html>
             <body>
@@ -127,21 +125,24 @@ export async function loggedInUserInfo(req: Request, res: Response, next: NextFu
     }
 }
 
-export async function sendResetPasswordLink(req: Request, res: Response, next: NextFunction) {
+export async function sendForgotPasswordMail(req: Request, res: Response, next: NextFunction) {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorInfo = errors.array().map(ele => ele.msg);
+            next({ message: errorInfo.join(",") })
+            return;
+        }
         const { email } = req.body;
-
-        res.success('Successfully');
-    } catch (error) {
-        next(error);
-    }
-}
-
-export async function resetPassword(req: Request, res: Response, next: NextFunction) {
-    try {
-        const { token } = req.params;
-
-        res.success('Successfully');
+        const whereCondition = { email };
+        let user = await getUser(whereCondition);
+        if (user) {
+            const link = clientUrl(config.client['reset-password'], `${user.token}`);
+            await sendForgotPasswordEmail(email, link);
+            res.success('Please check inbox');
+        } else {
+            throw new Error("Invalid email, please sign up")
+        }
     } catch (error) {
         next(error);
     }
@@ -152,12 +153,19 @@ export async function changePassword(req: Request, res: Response, next: NextFunc
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             const errorInfo = errors.array().map(ele => ele.msg);
-            next({message: errorInfo.join(",")})
+            next({ message: errorInfo.join(",") })
             return;
         }
-        const { id: userId } = req.user;
-        await
-            res.success('Successfully');
+        const { token } = req.params;
+        const { password } = req.body;
+        const whereCondition = { token };
+        let user = await getUser(whereCondition);
+        if (user) {
+            await updatePassword(password, whereCondition);
+            res.success('Successfully changed Password');
+        } else {
+            throw new Error("Invalid user")
+        }
     } catch (error) {
         next(error);
     }
@@ -165,17 +173,25 @@ export async function changePassword(req: Request, res: Response, next: NextFunc
 
 export async function updateUser(req: Request, res: Response, next: NextFunction) {
     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorInfo = errors.array().map(ele => ele.msg);
-            next({message: errorInfo.join(",")})
-            return;
-        }
-        const { id: userId } = req.user;
+        const userId = req.user.id;
+        const updateData = req.body;
 
-        res.success('Successfully');
+        if (req.file) {
+            const profilePicture = req.file;
+            const filePath = serverUrl(profilePicture.path);
+            Object.assign(updateData, { profilePic: filePath })
+        }
+        const whereCondition = { id: userId };
+        let user = await getUser(whereCondition);
+        if(user){
+            Object.assign(updateData, user)
+            await modifyUser(whereCondition, updateData);
+            res.success(updateData, 'User updated successfully');
+        }else{
+            throw new Error("Invalid user")
+        }
     } catch (error) {
-        next(error);
+        res.status(400).json({ message: error.message });
     }
 }
 
@@ -266,7 +282,7 @@ export async function operations(req: Request, res: Response, next: NextFunction
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             const errorInfo = errors.array().map(ele => ele.msg);
-            next({message: errorInfo.join(",")})
+            next({ message: errorInfo.join(",") })
             return;
         }
         const { actionId } = req.query;
@@ -282,7 +298,7 @@ export async function createAdminUser(req: Request, res: Response, next: NextFun
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             const errorInfo = errors.array().map(ele => ele.msg);
-            next({message: errorInfo.join(",")})
+            next({ message: errorInfo.join(",") })
             return;
         }
         const { username: name, email, password } = req.body;

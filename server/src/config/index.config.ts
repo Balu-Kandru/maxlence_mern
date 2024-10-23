@@ -31,10 +31,15 @@ export default {
             "/api/user-management/role",
             "/api/user-management/login",
             "/api/user-management/register",
-            "/api/user-management/confirm/:token"
+            "/api/user-management/confirm/:token",
+            "/api/user-management/forget-password-mail",
+            "/api/user-management/change-password/:token"
         ]
     },
-    clientUrl: process.env.CLIENT_URL, 
+    client: {
+        url: process.env.CLIENT_URL,
+        "reset-password": "/reset-password"
+    },
     apiPrefix:{
         server: "/api"
     },

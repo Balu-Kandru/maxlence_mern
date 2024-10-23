@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Button, Grid } from '@mui/material';
 import { useActionContext } from '../ActionContext';
-import { apiClient, getToken } from '../helpers/common';
 import { ApiRoutes } from '../enums/apiRoutes';
 import { AxiosResponse } from 'axios';
 import { Action, ActionsResponse } from '../types/login.interface';
+import { apiClient } from '../helpers/axiosClient';
 
 interface ActionBoxProps {
   actions: Action[];
@@ -16,17 +16,10 @@ const ActionBox: React.FC<ActionBoxProps> = ({ actions, onSelectAction }) => {
 
   useEffect(()=>{
     if(!actions.length){
-      const accessToken = getToken();
-      apiClient.get(ApiRoutes.USER_ACTIONS, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      }).then((actionsData: AxiosResponse<ActionsResponse>) => {
+      apiClient.get(ApiRoutes.USER_ACTIONS)
+      .then((actionsData: AxiosResponse<ActionsResponse>) => {
         const actions = actionsData.data.data;
         setActions(actions)
-      }).catch((err: any) => {
-        console.log(err)
-        alert(`Unauthorized user ${err.message}`);
       })
     }
   },[]);
