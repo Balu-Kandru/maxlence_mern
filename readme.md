@@ -47,8 +47,8 @@ DB_SCHEMA=maxlence_mern
 
 DOMAIN=http://localhost:3001
 
-EMAIL_USER=swamy.kandru@atishae.net
-EMAIL_PASS=Balu@1998
+EMAIL_USER=YOU'RE_EMAIL
+EMAIL_PASS=EMAIL_PASS
 
 JWT_SECRETKEY=maxlence_mern
 
