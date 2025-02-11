@@ -10,11 +10,13 @@ import DataGrid from './pages/TableData';
 import UpdateProfile from './pages/EditProfile';
 import CreateContent from './pages/CreateContent';
 import NotFoundPage from './components/NotFound';
+import Mstate from 'mstate-executor';
 
 const AppRoutes: React.FC = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/mstate" element={<Mstate token="0qN4gFbeZe8uIYdPFVAi" workflow="demo__erp_job_sign_up"/>} />
         <Route path="/" element={<IsUserLoggedIn><Login /></IsUserLoggedIn>} />
         <Route path="/register" element={<IsUserLoggedIn><Register /></IsUserLoggedIn>} />
         <Route path="/forgot-password" element={<IsUserLoggedIn><ForgotPassword /></IsUserLoggedIn>} />

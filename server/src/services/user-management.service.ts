@@ -61,6 +61,7 @@ export const createUser = async ({ name, email, password, filePath, isValidated 
 
         return newUser;
     } catch (error) {
+        console.log(error)
         throw new Error('User creation failed: ' + error.message);
     }
 }

@@ -5,6 +5,7 @@ import config from '../config/index.config';
 let sequelize: Sequelize | null = null;
 
 function dbConnection(){
+  console.log( config.mysql)
   return new Sequelize({
     ...config.mysql,
     dialect: 'mysql',

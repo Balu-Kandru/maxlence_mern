@@ -11,7 +11,6 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSelectAction = (actionId: number) => {
-    console.log(`Selected Action: ${actionId}`);
     navigate(`/data-grid/${actionId}`);
   };
 

@@ -7,6 +7,7 @@
     "build": "tsc",
     "dev": "nodemon",
     "start": "ts-node src/index.ts",
+    "start:redis": "redis-server --port 6380 &",
     "push:roles-actions": "npx tsx src/db/seeds/roleNAction/run",
     "push:admin": "npx tsx src/db/seeds/createAdminUser/run",
     "push:actionOperations": "npx tsx src/db/seeds/actionOperations/run"
